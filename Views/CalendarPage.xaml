@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:scheduler="clr-namespace:Syncfusion.Maui.Scheduler;assembly=Syncfusion.Maui.Scheduler"               
-             xmlns:controls="clr-namespace:Ifpa.Views.Controls"
              x:Class="Ifpa.Views.CalendarPage"
              xmlns:fluent="clr-namespace:MauiIcons.Fluent;assembly=MauiIcons.Fluent"    
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -28,7 +27,7 @@
         <Grid x:Name="MapLayout" RowDefinitions="*,*" >
 
             <Map x:Name="calendarMap" MapType="Street" Grid.Row="0"
-                     ItemsSource="{Binding Pins}" MinimumHeightRequest="300">
+                     ItemsSource="{Binding Pins}" MinimumHeightRequest="300" IsShowingUser="True">
                 <Map.ItemTemplate>
                     <DataTemplate>
                         <Pin MarkerClicked="Pin_MarkerClicked" InfoWindowClicked="Pin_InfoWindowClicked"

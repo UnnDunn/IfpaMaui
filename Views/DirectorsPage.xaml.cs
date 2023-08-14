@@ -13,6 +13,7 @@ namespace Ifpa.Views
         public DirectorsPage(DirectorsViewModel viewModel)
         {
             InitializeComponent();
+            TabHost.SelectedIndex = 0;
 
             BindingContext = ViewModel = viewModel;
         }

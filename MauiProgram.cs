@@ -14,6 +14,8 @@ using PinballApi;
 using Maui.FixesAndWorkarounds;
 using Microsoft.Maui.LifecycleEvents;
 using Microsoft.Maui.Controls.Compatibility.Hosting;
+using Sharpnado.Tabs;
+using Microcharts.Maui;
 
 namespace Ifpa;
 
@@ -34,6 +36,8 @@ public static class MauiProgram
             .UseMauiCommunityToolkit()
             .UseMauiMaps()
             .UseFluentMauiIcons()
+            .UseSharpnadoTabs(loggerEnable: true, debugLogEnable: true)
+            .UseMicrocharts()
             .UseShiny()
             .ConfigureSyncfusionCore()
             .ConfigureFonts(fonts =>

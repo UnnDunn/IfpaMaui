@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Ifpa.Converters"
              xmlns:datatemplate="clr-namespace:Ifpa.Views.DataTemplates"
-             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:tabs="http://sharpnado.com"
              x:Class="Ifpa.Views.PlayerResultsPage"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              xmlns:fluent="clr-namespace:MauiIcons.Fluent;assembly=MauiIcons.Fluent"
@@ -18,39 +18,42 @@
         <datatemplate:PlayerResultDataTemplate x:Key="PlayerResultDataTemplate" />
         <toolkit:InvertedBoolConverter x:Key="invertedBoolConverter" />
     </ContentPage.Resources>
-    <Grid>
-        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
-        <tabView:SfTabView Style="{StaticResource TabView}" IsVisible="{Binding IsBusy, Converter={StaticResource invertedBoolConverter}}"  >
-            <tabView:SfTabItem Header="Active">
-                <tabView:SfTabItem.Content>
-                    <CollectionView x:Name="ActiveListView"
+    <Grid RowDefinitions="50, Auto">
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Grid.RowSpan="2" />
+
+        <tabs:TabHostView x:Name="TabHost" Grid.Row="0" IsVisible="{Binding IsBusy, Converter={StaticResource invertedBoolConverter}}">
+            <tabs:MaterialUnderlinedTabItem Style="{StaticResource MaterialTabStyle}" Label="Active" />
+            <tabs:MaterialUnderlinedTabItem Style="{StaticResource MaterialTabStyle}" Label="Unused" />
+            <tabs:MaterialUnderlinedTabItem Style="{StaticResource MaterialTabStyle}" Label="Past" />
+        </tabs:TabHostView>
+
+        <ScrollView Grid.Row="1" IsVisible="{Binding IsBusy, Converter={StaticResource invertedBoolConverter}}">
+            <tabs:ViewSwitcher x:Name="Switcher"
+                                    VerticalOptions="Center"
+                                    Animate="True"                           
+                                    SelectedIndex="{Binding Source={x:Reference TabHost}, Path=SelectedIndex, Mode=OneWay}">
+
+                <CollectionView x:Name="ActiveListView"
                                 ItemsSource="{Binding ActiveResults}"
                                 SelectionMode="Single"
                                 SelectionChanged="ActiveListView_SelectionChanged"
                                 ItemTemplate="{StaticResource PlayerResultDataTemplate}"
                                 EmptyView="No active tournament results" />
-                </tabView:SfTabItem.Content>
-            </tabView:SfTabItem>
-            <tabView:SfTabItem Header="Unused">
-                <tabView:SfTabItem.Content>
-                    <CollectionView x:Name="UnusedListView"
+
+                <CollectionView x:Name="UnusedListView"
                                 ItemsSource="{Binding UnusedResults}"
                                 SelectionMode="Single"
                                 SelectionChanged="ActiveListView_SelectionChanged"
                                 ItemTemplate="{StaticResource PlayerResultDataTemplate}"
                                 EmptyView="No unused tournament results"/>
-                </tabView:SfTabItem.Content>
-            </tabView:SfTabItem>
-            <tabView:SfTabItem Header="Past">
-                <tabView:SfTabItem.Content>
-                    <CollectionView x:Name="PastListView"
+
+                <CollectionView x:Name="PastListView"
                                 ItemsSource="{Binding PastResults}"
                                 SelectionMode="Single"
                                 SelectionChanged="ActiveListView_SelectionChanged"
                                 ItemTemplate="{StaticResource PlayerResultDataTemplate}"
                                 EmptyView="No past tournament results"/>
-                </tabView:SfTabItem.Content>
-            </tabView:SfTabItem>
-        </tabView:SfTabView>
+            </tabs:ViewSwitcher>
+        </ScrollView>
     </Grid>
 </ContentPage>

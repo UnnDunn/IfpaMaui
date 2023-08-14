@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Ifpa.Converters"
-             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:tabs="http://sharpnado.com"
              x:Class="Ifpa.Views.ChampionshipSeriesDetailPage"             
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"     
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
@@ -14,109 +14,108 @@
             <toolkit:InvertedBoolConverter x:Key="invertedBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid>
-        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
-        <tabView:SfTabView Style="{StaticResource TabView}"
-                           IsVisible="{Binding IsBusy, Converter={StaticResource invertedBoolConverter}}">
-            <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="Standings">
-                    <tabView:SfTabItem.Content>
+    <Grid RowDefinitions="50, Auto">
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Grid.RowSpan="2" />
 
-                        <CollectionView
+        <tabs:TabHostView x:Name="TabHost" Grid.Row="0" IsVisible="{Binding IsBusy, Converter={StaticResource invertedBoolConverter}}">
+            <tabs:MaterialUnderlinedTabItem Style="{StaticResource MaterialTabStyle}" Label="Standings" />
+            <tabs:MaterialUnderlinedTabItem Style="{StaticResource MaterialTabStyle}" Label="Tournaments" />
+        </tabs:TabHostView>
+
+        <ScrollView Grid.Row="1" IsVisible="{Binding IsBusy, Converter={StaticResource invertedBoolConverter}}">
+            <tabs:ViewSwitcher x:Name="Switcher"
+                                    VerticalOptions="Center"
+                                    Animate="True"                           
+                                    SelectedIndex="{Binding Source={x:Reference TabHost}, Path=SelectedIndex, Mode=OneWay}">
+
+                <CollectionView
                         ItemsSource="{Binding RegionStandings.Standings}"                        
                         SelectionMode="Single"
                         SelectionChanged="StandingsCollectionView_SelectionChanged">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackLayout>
-                                        <StackLayout Margin="10" Orientation="Horizontal" >
-                                            <Label VerticalTextAlignment="Center" Text="{Binding SeriesRank, Converter={StaticResource intToOrdinalString}}" 
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout>
+                                <StackLayout Margin="10" Orientation="Horizontal" >
+                                    <Label VerticalTextAlignment="Center" Text="{Binding SeriesRank, Converter={StaticResource intToOrdinalString}}" 
                                        LineBreakMode="NoWrap" 
                                         
                                        FontSize="24" MinimumWidthRequest="58" HorizontalOptions="Start" />
-                                            <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-                                                <Label LineBreakMode="NoWrap"  FontSize="16" Text="{Binding PlayerName}" />
+                                    <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+                                        <Label LineBreakMode="NoWrap"  FontSize="16" Text="{Binding PlayerName}" />
 
-                                                <Label HorizontalOptions="StartAndExpand" Text="{Binding WpprPoints, StringFormat='{0:N2}'}" 
+                                        <Label HorizontalOptions="StartAndExpand" Text="{Binding WpprPoints, StringFormat='{0:N2}'}" 
                                                LineBreakMode="NoWrap"  FontSize="10" TextColor="{StaticResource SecondaryTextColor}" />
-                                            </StackLayout>
-
-                                            <StackLayout Orientation="Vertical" >
-                                                <Label HorizontalOptions="StartAndExpand" LineBreakMode="NoWrap"  FontSize="12" HorizontalTextAlignment="Start">
-                                                    <Label.FormattedText>
-                                                        <FormattedString>
-                                                            <FormattedString.Spans>
-                                                                <Span Text="Event Count:" TextColor="{StaticResource SecondaryTextColor}" />
-                                                                <Span Text=" " />
-                                                                <Span Text="{Binding EventCount}" />
-                                                            </FormattedString.Spans>
-                                                        </FormattedString>
-                                                    </Label.FormattedText>
-                                                </Label>
-                                                <Label HorizontalOptions="StartAndExpand" LineBreakMode="NoWrap"  FontSize="12" HorizontalTextAlignment="Start">
-                                                    <Label.FormattedText>
-                                                        <FormattedString>
-                                                            <FormattedString.Spans>
-                                                                <Span Text="Win Count:" TextColor="{StaticResource SecondaryTextColor}" />
-                                                                <Span Text=" " />
-                                                                <Span Text="{Binding WinCount}" />
-                                                            </FormattedString.Spans>
-                                                        </FormattedString>
-                                                    </Label.FormattedText>
-                                                </Label>
-                                            </StackLayout>
-
-                                        </StackLayout>
-                                        <BoxView Style="{StaticResource BoxSeperator}"/>
                                     </StackLayout>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
 
-                    </tabView:SfTabItem.Content>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem Header="Tournaments">
-                    <tabView:SfTabItem.Content>
+                                    <StackLayout Orientation="Vertical" >
+                                        <Label HorizontalOptions="StartAndExpand" LineBreakMode="NoWrap"  FontSize="12" HorizontalTextAlignment="Start">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <FormattedString.Spans>
+                                                        <Span Text="Event Count:" TextColor="{StaticResource SecondaryTextColor}" />
+                                                        <Span Text=" " />
+                                                        <Span Text="{Binding EventCount}" />
+                                                    </FormattedString.Spans>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                        <Label HorizontalOptions="StartAndExpand" LineBreakMode="NoWrap"  FontSize="12" HorizontalTextAlignment="Start">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <FormattedString.Spans>
+                                                        <Span Text="Win Count:" TextColor="{StaticResource SecondaryTextColor}" />
+                                                        <Span Text=" " />
+                                                        <Span Text="{Binding WinCount}" />
+                                                    </FormattedString.Spans>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
 
-                        <CollectionView
+                                </StackLayout>
+                                <BoxView Style="{StaticResource BoxSeperator}"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <CollectionView
                         SelectionChanged="TournamentResultsCollectionView_SelectionChanged"
                         SelectionMode="Single"
                         ItemsSource="{Binding SeriesTournaments.SubmittedTournaments}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackLayout>
-                                        <Grid Margin="10" ColumnDefinitions="*, 100">
-                                            <StackLayout Grid.Column="0" Orientation="Vertical">
-                                                <Label  FontSize="Medium" Text="{Binding TournamentName}" />
-                                                <Label  FontSize="Small" Text="{Binding EventName}"  />
-                                            </StackLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout>
+                                <Grid Margin="10" ColumnDefinitions="*, 100">
+                                    <StackLayout Grid.Column="0" Orientation="Vertical">
+                                        <Label FontSize="Medium" Text="{Binding TournamentName}" />
+                                        <Label FontSize="Small" Text="{Binding EventName}" TextColor="{StaticResource SecondaryTextColor}" />
+                                    </StackLayout>
 
-                                            <StackLayout Grid.Column="1" Orientation="Vertical" VerticalOptions="Center" Padding="10" MinimumWidthRequest="60">
-                                                <Label LineBreakMode="NoWrap" FontSize="12" Text="{Binding EventEndDate, StringFormat='{0:d}'}" HorizontalTextAlignment="End" 
+                                    <StackLayout Grid.Column="1" Orientation="Vertical" VerticalOptions="Center" Padding="10" MinimumWidthRequest="60">
+                                        <Label LineBreakMode="NoWrap" FontSize="12" Text="{Binding EventEndDate, StringFormat='{0:d}'}" HorizontalTextAlignment="End" 
                                                        TextColor="{StaticResource SecondaryTextColor}"  />
 
-                                                <Label LineBreakMode="NoWrap" FontSize="12" HorizontalTextAlignment="End">
-                                                    <Label.FormattedText>
-                                                        <FormattedString>
-                                                            <FormattedString.Spans>
-                                                                <Span Text="Players:" TextColor="{StaticResource SecondaryTextColor}" />
-                                                                <Span Text=" " />
-                                                                <Span Text="{Binding PlayerCount}" />
-                                                            </FormattedString.Spans>
-                                                        </FormattedString>
-                                                    </Label.FormattedText>
-                                                </Label>
-                                            </StackLayout>
-                                        </Grid>
-                                        <BoxView Style="{StaticResource BoxSeperator}"/>
+                                        <Label LineBreakMode="NoWrap" FontSize="12" HorizontalTextAlignment="End">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <FormattedString.Spans>
+                                                        <Span Text="Players:" TextColor="{StaticResource SecondaryTextColor}" />
+                                                        <Span Text=" " />
+                                                        <Span Text="{Binding PlayerCount}" />
+                                                    </FormattedString.Spans>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
                                     </StackLayout>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                                </Grid>
+                                <BoxView Style="{StaticResource BoxSeperator}"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-                    </tabView:SfTabItem.Content>
-                </tabView:SfTabItem>
-            </tabView:SfTabView.Items>
-        </tabView:SfTabView>
+            </tabs:ViewSwitcher>
+        </ScrollView>
     </Grid>
 </ContentPage>

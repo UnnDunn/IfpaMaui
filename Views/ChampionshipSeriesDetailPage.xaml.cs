@@ -23,6 +23,7 @@ namespace Ifpa.Views
         {
             InitializeComponent();
 
+            TabHost.SelectedIndex = 0;
             BindingContext = this.ViewModel = viewModel;
         }
 

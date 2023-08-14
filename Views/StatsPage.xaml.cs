@@ -12,6 +12,7 @@ namespace Ifpa.Views
         public StatsPage(StatsViewModel viewModel)
         {
             InitializeComponent();
+            TabHost.SelectedIndex = 0;
 
             BindingContext = this.ViewModel = viewModel;
         }

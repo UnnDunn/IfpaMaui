@@ -16,6 +16,7 @@ namespace Ifpa.Views
         public CustomRankingsDetailPage(CustomRankingsDetailViewModel viewModel)
         {
             InitializeComponent();
+            TabHost.SelectedIndex = 0;
 
             BindingContext = ViewModel = viewModel;
         }
