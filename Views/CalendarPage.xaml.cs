@@ -1,11 +1,9 @@
 ﻿using Ifpa.ViewModels;
-using System.Diagnostics;
 using PinballApi.Models.WPPR.v1.Calendar;
 using Ifpa.Models;
 using Microsoft.Maui.Maps;
 using Microsoft.Maui.Controls.Maps;
 using MauiIcons.Fluent;
-using Serilog.Core;
 using Serilog;
 
 namespace Ifpa.Views
@@ -15,7 +13,6 @@ namespace Ifpa.Views
         MapAndList,
         Calendar
     }
-
 
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CalendarPage : ContentPage
@@ -55,8 +52,6 @@ namespace Ifpa.Views
         {
             try
             {
-                calendarMap.Pins.Clear();
-
                 var geoLocation = await Geocoding.GetLocationsAsync(Settings.LastCalendarLocation);
                 calendarMap.MoveToRegion(MapSpan.FromCenterAndRadius(new Location(geoLocation.First().Latitude, geoLocation.First().Longitude),
                                                                         Microsoft.Maui.Maps.Distance.FromMiles(Settings.LastCalendarDistance)));
@@ -92,17 +87,17 @@ namespace Ifpa.Views
             }
         }
 
-        private async void calendar_Tapped(object sender, Syncfusion.Maui.Scheduler.SchedulerTappedEventArgs e)
-        {
-            if (e.Appointments != null && e.Appointments.Any())
-            {
-                var calendar = e.Appointments.First() as InlineCalendarItem;
-                if (calendar == null)
-                    return;
+        //private async void calendar_Tapped(object sender, Syncfusion.Maui.Scheduler.SchedulerTappedEventArgs e)
+        //{
+        //    if (e.Appointments != null && e.Appointments.Any())
+        //    {
+        //        var calendar = e.Appointments.First() as InlineCalendarItem;
+        //        if (calendar == null)
+        //            return;
 
-                await Shell.Current.GoToAsync($"calendar-detail?calendarId={calendar.CalendarId}");
-            }
-        }
+        //        await Shell.Current.GoToAsync($"calendar-detail?calendarId={calendar.CalendarId}");
+        //    }
+        //}
 
         private async void TournamentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

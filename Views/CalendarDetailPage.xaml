@@ -11,7 +11,7 @@
         <ResourceDictionary>
             <toolkit:InvertedBoolConverter x:Key="invertedBoolConverter" />
             <Style x:Key="calendarHeader" TargetType="Label">
-                <Setter Property="TextColor" Value="White" />
+                <Setter Property="TextColor" Value="{StaticResource PrimaryTextColorDark}" />
                 <Setter Property="FontAttributes" Value="Bold" />
             </Style>
         </ResourceDictionary>

@@ -17,27 +17,11 @@ namespace Ifpa.ViewModels
 
         public ICommand LoadItemsCommand { get; set; }
 
-        private int startingPosition;
-        public int StartingPosition
-        {
-            get { return startingPosition; }
-            set { SetProperty(ref startingPosition, value); }
-        }
+        public int StartingPosition { get; set; }
+        
+        public int CountOfItemsToFetch { get; set; }       
 
-        private int countOfItemsToFetch;
-        public int CountOfItemsToFetch
-        {
-            get { return countOfItemsToFetch; }
-            set { SetProperty(ref countOfItemsToFetch, value); }
-        }
-
-        private bool showOverallRank;
-
-        public bool ShowOverallRank
-        {
-            get { return showOverallRank; }
-            set { SetProperty(ref showOverallRank, value); }
-        }
+        public bool ShowOverallRank { get; set; }      
 
         public RankingType CurrentRankingType { get; set; }
         public List<string> RankingTypes

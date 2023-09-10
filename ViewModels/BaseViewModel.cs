@@ -6,29 +6,21 @@ using Ifpa.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PinballApi;
+using PropertyChanged;
 
 namespace Ifpa.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    [AddINotifyPropertyChangedInterface]
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
         public PinballRankingApiV1 PinballRankingApi { get; private set; } 
         public PinballRankingApiV2 PinballRankingApiV2 { get; private set; }
 
         protected readonly ILogger logger;
 
-        bool isBusy = false;
-        public bool IsBusy
-        {
-            get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
-        }
+        public bool IsBusy { get; set; }      
 
-        string title = string.Empty;
-        public string Title
-        {
-            get { return title; }
-            set { SetProperty(ref title, value); }
-        }
+        public string Title { get; set; }      
 
         public BaseViewModel(PinballRankingApiV1 pinballRankingApiV1, PinballRankingApiV2 pinballRankingApiV2, ILogger<BaseViewModel> logger)
         {         
@@ -37,28 +29,11 @@ namespace Ifpa.ViewModels
             this.logger = logger;
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value,
-            [CallerMemberName]string propertyName = "",
-            Action onChanged = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(backingStore, value))
-                return false;
-
-            backingStore = value;
-            onChanged?.Invoke();
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
-
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
     }

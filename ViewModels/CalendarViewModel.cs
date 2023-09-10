@@ -5,15 +5,36 @@ using Ifpa.Models;
 using PinballApi;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Extensions.Logging;
+using XCalendar.Core.Models;
+using XCalendar.Core.Collections;
+using System.Collections.Specialized;
+using System.Windows.Input;
+using XCalendar.Core.Extensions;
+using XCalendar.Core.Enums;
 
 namespace Ifpa.ViewModels
 {
     public class CalendarViewModel : BaseViewModel
     {
-        public ObservableCollection<InlineCalendarItem> TournamentCalenderItems { get; set; }
         public ObservableCollectionRange<CalendarDetails> CalendarDetails { get; set; }
 
+        public ObservableRangeCollection<CalendarDetails> SelectedEvents { get; } = new ObservableRangeCollection<CalendarDetails>();
+
+        public Calendar<EventDay> EventCalendar { get; set; } = new Calendar<EventDay>()
+        {
+            SelectedDates = new ObservableRangeCollection<DateTime>(),
+            SelectionAction = SelectionAction.Modify,
+            SelectionType = SelectionType.Single
+        };
+
+        public ICommand ChangeDateSelectionCommand { get; set; }
+
+        public ICommand NavigateCalendarCommand { get; set; }
+
+
         public ObservableCollection<Pin> Pins { get; set; }
+
+        public List<Color> Colors { get; } = new List<Color>() { Microsoft.Maui.Graphics.Colors.Red, Microsoft.Maui.Graphics.Colors.Orange, Microsoft.Maui.Graphics.Colors.Yellow, Color.FromArgb("#00A000"), Microsoft.Maui.Graphics.Colors.Blue, Color.FromArgb("#8010E0") };
 
         public Command LoadItemsCommand { get; set; }
 
@@ -22,6 +43,13 @@ namespace Ifpa.ViewModels
             Title = "Calendar";
             CalendarDetails = new ObservableCollectionRange<CalendarDetails>();
             Pins = new ObservableCollection<Pin>();
+
+
+            ChangeDateSelectionCommand = new Command<DateTime>(ChangeDateSelection);
+            NavigateCalendarCommand = new Command<int>(NavigateCalendar);
+
+            EventCalendar.SelectedDates.CollectionChanged += SelectedDates_CollectionChanged;
+            EventCalendar.DaysUpdated += EventCalendar_DaysUpdated;
         }
 
         public async Task ExecuteLoadItemsCommand(string address, int distance)
@@ -47,27 +75,13 @@ namespace Ifpa.ViewModels
                     //Limit calendar to 100 future items. otherwise this page chugs
                     foreach (var detail in CalendarDetails)
                     {
-                        LoadEventOntoCalendar(detail);
+                        LoadEventOntoMap(detail);
                     }
 
-                    TournamentCalenderItems = new ObservableCollection<InlineCalendarItem>();
-
-                    foreach (var item in items.Calendar.Where(item => item.EndDate - item.StartDate <= 5.Days()))
+                    foreach (var day in EventCalendar.Days)
                     {
-                        TournamentCalenderItems.Add(new InlineCalendarItem()
-                        {
-                            CalendarId = item.CalendarId,
-                            StartTime = item.StartDate,
-                            EndTime = item.EndDate,
-                            Subject = item.TournamentName,
-                            Location = item.City,
-                            IsAllDay = true
-                        });
+                        day.Events.ReplaceRange(items.Calendar.Where(x => x.StartDate.Date == day.DateTime.Date));
                     }
-
-                    OnPropertyChanged("TournamentCalenderItems");
-                    OnPropertyChanged("CalendarDetails");
-                    OnPropertyChanged("Pins");
                 }
 
                 logger.LogDebug("Collections loaded at {0}", sw.ElapsedMilliseconds);
@@ -82,7 +96,7 @@ namespace Ifpa.ViewModels
             }
         }
 
-        private void LoadEventOntoCalendar(CalendarDetails detail)
+        private void LoadEventOntoMap(CalendarDetails detail)
         {
             var location = new Location(detail.Latitude, detail.Longitude);
 
@@ -98,6 +112,33 @@ namespace Ifpa.ViewModels
                 pin.MarkerId = detail.CalendarId.ToString();
 
                 Pins.Add(pin);
+            }
+        }
+
+        private void EventCalendar_DaysUpdated(object sender, EventArgs e)
+        {
+            //TODO: call ExecuteLoadItemsCommand(string address, int distance)
+        }
+
+        public void ChangeDateSelection(DateTime dateTime)
+        {
+            EventCalendar?.ChangeDateSelection(dateTime);
+        }
+
+        private void SelectedDates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            SelectedEvents.ReplaceRange(CalendarDetails.Where(x => EventCalendar.SelectedDates.Any(y => x.StartDate.Date == y.Date)).OrderByDescending(x => x.StartDate));
+        }
+
+        public void NavigateCalendar(int amount)
+        {
+            if (EventCalendar.NavigatedDate.TryAddMonths(amount, out DateTime targetDate))
+            {
+                EventCalendar.Navigate(targetDate - EventCalendar.NavigatedDate);
+            }
+            else
+            {
+                EventCalendar.Navigate(amount > 0 ? TimeSpan.MaxValue : TimeSpan.MinValue);
             }
         }
     }
