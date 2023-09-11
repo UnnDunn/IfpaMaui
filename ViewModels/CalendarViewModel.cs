@@ -31,10 +31,7 @@ namespace Ifpa.ViewModels
 
         public ICommand NavigateCalendarCommand { get; set; }
 
-
         public ObservableCollection<Pin> Pins { get; set; }
-
-        public List<Color> Colors { get; } = new List<Color>() { Microsoft.Maui.Graphics.Colors.Red, Microsoft.Maui.Graphics.Colors.Orange, Microsoft.Maui.Graphics.Colors.Yellow, Color.FromArgb("#00A000"), Microsoft.Maui.Graphics.Colors.Blue, Color.FromArgb("#8010E0") };
 
         public Command LoadItemsCommand { get; set; }
 

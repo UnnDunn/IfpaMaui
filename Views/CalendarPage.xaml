@@ -71,7 +71,6 @@
                 Days="{Binding EventCalendar.Days}"
                 DaysOfWeek="{Binding EventCalendar.DayNamesOrder}"
                 NavigatedDate="{Binding EventCalendar.NavigatedDate}"
-                Style="{StaticResource DefaultCalendarViewStyle}"
                 BackwardsArrowCommand="{Binding NavigateCalendarCommand}"           
                 ForwardsArrowCommand="{Binding NavigateCalendarCommand}">
 
@@ -108,31 +107,31 @@
                             <xc:DayView
                                 DateTime="{Binding DateTime}"
                                 HeightRequest="42"
-                                InvalidStyle="{StaticResource DefaultDayViewInvalidStyle}"
                                 IsCurrentMonth="{Binding IsCurrentMonth}"
                                 IsInvalid="{Binding IsInvalid}"
                                 IsSelected="{Binding IsSelected}"
-                                IsToday="{Binding IsToday}"
-                                OtherMonthStyle="{StaticResource DefaultDayViewOtherMonthStyle}">
+                                IsToday="{Binding IsToday}">
 
                                 <xc:DayView.CurrentMonthStyle>
-                                    <Style BasedOn="{StaticResource DefaultDayViewCurrentMonthStyle}" TargetType="{x:Type xc:DayView}">
+                                    <Style TargetType="{x:Type xc:DayView}">
                                         <Setter Property="Command" Value="{Binding ChangeDateSelectionCommand, Source={RelativeSource AncestorType={x:Type ViewModels:CalendarViewModel}}}"/>
                                         <Setter Property="CommandParameter" Value="{Binding DateTime}"/>
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource PrimaryTextColor}, Dark={StaticResource PrimaryTextColorDark}}" />
                                     </Style>
                                 </xc:DayView.CurrentMonthStyle>
 
                                 <xc:DayView.TodayStyle>
-                                    <Style BasedOn="{StaticResource DefaultDayViewTodayStyle}" TargetType="{x:Type xc:DayView}">
+                                    <Style TargetType="{x:Type xc:DayView}">
                                         <Setter Property="Command" Value="{Binding ChangeDateSelectionCommand, Source={RelativeSource AncestorType={x:Type ViewModels:CalendarViewModel}}}"/>
                                         <Setter Property="CommandParameter" Value="{Binding DateTime}"/>
                                     </Style>
                                 </xc:DayView.TodayStyle>
 
                                 <xc:DayView.SelectedStyle>
-                                    <Style BasedOn="{StaticResource DefaultDayViewSelectedStyle}" TargetType="{x:Type xc:DayView}">
+                                    <Style TargetType="{x:Type xc:DayView}">
                                         <Setter Property="Command" Value="{Binding ChangeDateSelectionCommand, Source={RelativeSource AncestorType={x:Type ViewModels:CalendarViewModel}}}"/>
                                         <Setter Property="CommandParameter" Value="{Binding DateTime}"/>
+                                        <Setter Property="TextColor" Value="Purple"/>
                                     </Style>
                                 </xc:DayView.SelectedStyle>
 
@@ -223,10 +222,10 @@
                                     <Label
                                         Margin="5,0,0,0"
                                         FontSize="16"
-                                        Text="{Binding TournamentName}"
-                                        TextColor="{StaticResource SecondaryTextColor}" />
+                                        Text="{Binding TournamentName}" />
                                     <Label
                                         Text="{Binding StartDate, StringFormat='{0:d}'}"                                        
+                                        TextColor="{StaticResource SecondaryTextColor}" 
                                         VerticalTextAlignment="Center"/>
                                 </VerticalStackLayout>    
                         </Border>
