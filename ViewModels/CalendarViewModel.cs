@@ -23,7 +23,7 @@ namespace Ifpa.ViewModels
         public Calendar<EventDay> EventCalendar { get; set; } = new Calendar<EventDay>()
         {
             SelectedDates = new ObservableRangeCollection<DateTime>(),
-            SelectionAction = SelectionAction.Modify,
+            SelectionAction = SelectionAction.Replace,
             SelectionType = SelectionType.Single
         };
 
@@ -117,7 +117,7 @@ namespace Ifpa.ViewModels
 
         private void EventCalendar_DaysUpdated(object sender, EventArgs e)
         {
-            //TODO: call ExecuteLoadItemsCommand(string address, int distance)
+            SelectedEvents.Clear();
         }
 
         public void ChangeDateSelection(DateTime dateTime)
@@ -126,7 +126,7 @@ namespace Ifpa.ViewModels
         }
 
         private void SelectedDates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
+        {            
             SelectedEvents.ReplaceRange(CalendarDetails.Where(x => EventCalendar.SelectedDates.Any(y => x.StartDate.Date == y.Date)).OrderByDescending(x => x.StartDate));
         }
 

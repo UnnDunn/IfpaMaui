@@ -125,5 +125,17 @@ namespace Ifpa.Views
 
             await Shell.Current.GoToAsync($"calendar-detail?calendarId={calendarItem.CalendarId}");
         }
+
+        private async void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var calendar = e.CurrentSelection.FirstOrDefault() as CalendarDetails;
+            if (calendar == null)
+                return;
+
+            await Shell.Current.GoToAsync($"calendar-detail?calendarId={calendar.CalendarId}");
+
+            // Manually deselect item.
+            ((CollectionView)sender).SelectedItem = null;
+        }
     }
 }
